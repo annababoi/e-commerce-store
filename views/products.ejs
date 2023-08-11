@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head', {title: pageTitle}); %>
+
+  <body>
+    <%- include('partials/header', {category: category}); %>
+
+    <div class="container">
+      <span>
+        <%- include('partials/breadcrumbs', {breadcrumbs: breadcrumbs});
+        %></span
+      >
+
+      <h2>Products</h2>
+      <div class="row">
+        <% product.forEach((prod, i) => { %>
+
+        <div class="card col-5 p-0 mt-5 <%= i%2 !== 0 ? 'offset-1': '' %>">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <% var image = getProductsImage(prod, 'large');%>
+              <img
+                class="img-fluid"
+                src="/images/<%=image.link%>"
+                alt="<%=image.alt%>"
+              />
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h3 class="card-title"><%= prod.name %></h3>
+                <p class="card-text"><%= prod.short_description %></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <p class="card-text"><%= getProductPrice(prod)%></p>
+                  <a
+                    href="/<%= category.id%>/<%= subCategoryId%>/<%=prod.id%>"
+                    class="btn btn-outline-secondary"
+                  >
+                    View product
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <%- include('partials/footer', {title: pageTitle}); %>
+  </body>
+</html>

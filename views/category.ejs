@@ -3,7 +3,45 @@
   <%- include('partials/head', {title: pageTitle}); %>
 
   <body>
-    <%- include('partials/header', {category: category}); %> <%-
-    include('partials/footer', {title: pageTitle}); %>
+    <%- include('partials/header', {category: category}); %>
+    <div class="container">
+      <div class="row">
+
+       <span> <%- include('partials/breadcrumbs', {breadcrumbs: breadcrumbs}); %></span>
+
+        <h1 class="text-secondary"><%=category.name%></h1>
+        <p class="text-dark"><%=category.page_description%></p>
+      </div>
+     
+      <% subCategories.forEach(res => { %>
+
+      <h3 class="text-body-secondary"><%= res.name %></h3>
+      <img src="/images/<%=res.image%>" class="w-100" alt="<%=res.name%>" />
+      <div class="col-12">
+        <% res.categories.forEach(sub => { %>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="text-body-secondary"><%= sub.name %></h3>
+            <img
+              class="w-100"
+              src="/images/<%=sub.image%>"
+              alt="<%=sub.name%>"
+            />
+            <p class="mt-2" ><%= sub.page_description %></h3>
+            
+            <div class="btn btn-outline-secondary">
+              <a
+                href="/<%=category.id%>/<%=sub.id%>"
+                class="nav-link" >
+                View products
+              </a>
+            </div>
+          </div>
+        </div>
+        <% }); %> <% }); %>
+      </div>
+      <%; %>
+    </div>
+    <%- include('partials/footer', {title: pageTitle}); %>
   </body>
 </html>

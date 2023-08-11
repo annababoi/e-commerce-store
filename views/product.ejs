@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head', {title: pageTitle}); %>
+
+  <body>
+    <%- include('partials/header', {category: category}); %>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 p-0">
+          <span>
+            <%- include('partials/breadcrumbs', {breadcrumbs: breadcrumbs});
+            %></span
+          >
+
+          <h2><%=product.name%></h2>
+
+          <div class="row g-0">
+            <div class="col-md-4">
+              <% var image = getProductsImage(product, 'large');%>
+
+              <img
+                class="img-fluid w-100"
+                src="/images/<%=image.link%>"
+                alt="<%=image.alt%>"
+              />
+            </div>
+            <div class="col-md-7 offset-1 ml-2">
+              <div class="">
+                <h3 class="title"><%= product.name %></h3>
+                <p class="text"><%=product.page_description %></p>
+                <div
+                  class="d-flex justify-content-between align-items-center"
+                ></div>
+                <div class="col-3 d-flex justify-content-between">
+                  <button class="btn btn-outline-secondary mt-5">
+                    Buy now
+                  </button>
+                  <h6 class="text mt-5"><%= getProductPrice(product)%></h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer', {title: pageTitle}); %>
+  </body>
+</html>

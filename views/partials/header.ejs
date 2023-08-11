@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid ">
-    <a class="navbar-brand" href="/">
-      <img src="../imgs/orng.png" alt="" class="col-1" />
+  <div class="container">
+    <a class="navbar-brand text-body-secondary col-4" href="/">
+      <img src="/images/orng.png" alt="" class="col-2" />
       ORANGE
     </a>
     <button
@@ -20,12 +20,12 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <% categories.forEach(category => { %>
         <li class="nav-item">
-          <a href="/categories/<%=category.id%>" class="nav-link col-6">
-            <%=category.name%>
+          <a href="/<%=category.id%>" class="nav-link col-6">
+            <%=category.name%> 
           </a>
         </li>
-
         <% }); %>
+        </ul>
       </div>
     </div>
   </div>

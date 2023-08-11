@@ -1,0 +1,12 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <% breadcrumbs.forEach((breadcrumb) => { %><a
+        class="link <%= breadcrumb.active ? 'text-primary' : 'text-secondary' %>"
+        href="<%= breadcrumb.breadcrumbUrl%> "
+      >
+        <%= breadcrumb.breadcrumbName %> / </a
+      ><% }); %>
+    </li>
+  </ol>
+</nav>

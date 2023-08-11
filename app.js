@@ -18,6 +18,8 @@ app.set("views", "views");
 
 app.use("/", categoryRouter);
 
+app.locals = require("./helpers/helpers");
+
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
     message: err.message || "Unknown error",
