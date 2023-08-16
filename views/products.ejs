@@ -30,7 +30,9 @@
                 <h3 class="card-title"><%= prod.name %></h3>
                 <p class="card-text"><%= prod.short_description %></p>
                 <div class="d-flex justify-content-between align-items-center">
-                  <p class="card-text"><%= getProductPrice(prod)%></p>
+                  <p class="card-text">
+                    <%= getProductPrice(prod.price, 'USD')%>
+                  </p>
                   <a
                     href="/<%= category.id%>/<%= subCategoryId%>/<%=prod.id%>"
                     class="btn btn-outline-secondary"

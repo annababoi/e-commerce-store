@@ -5,13 +5,45 @@ function getProductsImage(product, size) {
   return image;
 }
 
-function getProductPrice(product) {
+function getProductPrice(price, currency) {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: product.currency,
+    currency,
   });
-  return formatter.format(product.price);
+  return formatter.format(price);
 }
 
-function getProductSize(product) {}
-module.exports = { getProductsImage, getProductPrice };
+function getFormatDate() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // month is zero-based
+  let dd = today.getDate();
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+
+  const formatted = yyyy + "-" + mm + "-" + dd;
+  return formatted;
+}
+
+function getBreadcrumbs(req, res, next) {
+  const urls = req.originalUrl.split("/");
+
+  res.breadcrumbs = urls.map((url, i) => {
+    url = url.includes("-") ? url.split("-").join(" ") : url;
+
+    return {
+      breadcrumbName:
+        url === "" ? "Home" : url.charAt(0).toUpperCase() + url.slice(1),
+      breadcrumbUrl: url === "" ? "/" : `${urls.slice(0, i + 1).join("/")}`,
+      active: i === urls.length - 1,
+    };
+  });
+  next();
+}
+module.exports = {
+  getProductsImage,
+  getProductPrice,
+  getFormatDate,
+  getBreadcrumbs,
+};

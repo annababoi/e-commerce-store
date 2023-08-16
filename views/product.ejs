@@ -4,7 +4,11 @@
 
   <body>
     <%- include('partials/header', {category: category}); %>
-    <div class="container">
+    <div
+      class="container"
+      id="product"
+      data-product="<%= JSON.stringify(product) %>"
+    >
       <div class="row">
         <div class="col-12 p-0">
           <span>
@@ -12,9 +16,9 @@
             %></span
           >
 
-          <h2><%=product.name%></h2>
-
           <div class="row g-0">
+            <h2 class="mt-4"><%=product.name%></h2>
+
             <div class="col-md-4">
               <% var image = getProductsImage(product, 'large');%>
 
@@ -25,20 +29,62 @@
               />
             </div>
             <div class="col-md-7 offset-1 ml-2">
-              <div class="">
-                <h3 class="title"><%= product.name %></h3>
-                <p class="text"><%=product.page_description %></p>
-                <div
-                  class="d-flex justify-content-between align-items-center"
-                ></div>
-                <div class="col-3 d-flex justify-content-between">
-                  <button class="btn btn-outline-secondary mt-5">
-                    Buy now
-                  </button>
-                  <h6 class="text mt-5"><%= getProductPrice(product)%></h6>
+              <h3 class="title"><%= product.name %></h3>
+              <p class="text"><%= product.page_description %></p>
+              <div class="d-flex align-items-center">
+                <div id="productPrice" class="me-3">
+                  <%= getProductPrice(product.price, "USD") %>
                 </div>
+                <select id="currencyDropdown">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="PLN">PLN</option>
+                </select>
               </div>
+
+              <button class="btn btn-outline-secondary mt-3">Buy now</button>
             </div>
+
+            <script>
+              const productElement = document.querySelector("#product");
+              const product = JSON.parse(
+                productElement.getAttribute("data-product")
+              );
+              async function updateProductPrice(selectedCurrency) {
+                let convertedPrice = "";
+                if (selectedCurrency !== "USD") {
+                  try {
+                    const response = await fetch("/convert", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        productPrice: product.price,
+                        selectedCurrency,
+                      }),
+                    });
+                    const data = await response.json();
+                    convertedPrice = data.convertedPrice;
+                  } catch (error) {
+                    console.error("Error updating product price:", error);
+                  }
+                } else {
+                  convertedPrice =
+                    ' <%= getProductPrice(product.price, "USD") %>';
+                }
+                const priceElement = document.getElementById("productPrice");
+                priceElement.textContent = convertedPrice;
+              }
+
+              const currencyDropdown =
+                document.getElementById("currencyDropdown");
+              currencyDropdown.addEventListener("change", function () {
+                const selectedCurrency = currencyDropdown.value;
+                updateProductPrice(selectedCurrency);
+              });
+            </script>
           </div>
         </div>
       </div>

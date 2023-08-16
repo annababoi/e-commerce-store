@@ -1,8 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const soap = require("soap");
 
 const { PORT, MONGO_URL } = require("./config/config");
-const categoryRouter = require("./routes/category.router");
+const productRouter = require("./routes/product.router");
+const currencyRouter = require("./routes/currency.router");
+
+const helpers = require("./helpers/helpers");
 
 mongoose.set("strictQuery", false);
 
@@ -16,9 +20,14 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-app.use("/", categoryRouter);
+app.use("/", productRouter);
+app.use("/", currencyRouter);
 
-app.locals = require("./helpers/helpers");
+app.locals = helpers;
+
+app.use((req, res, next) => {
+  res.status(404).render("404", { pageTitle: "Page not found" });
+});
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
