@@ -37,28 +37,22 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, async () => {
-  // await mongoose.connect(MONGO_URL, {
-  //   useNewUrlParser: true,
-  //   useUnifiedTopology: true,
-  // });
-
-  console.log(`Listen port ${PORT}`);
-});
-
-async function connectToDatabase() {
+const connectDB = async () => {
   try {
     await mongoose.connect(MONGO_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000, // Optional, adjust as needed
     });
-    console.log("Connected to MongoDB Atlas");
-
-    // You can now define your models and perform database operations here
+    console.log(`MongoDB`);
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
+    console.log(error);
+    process.exit(1);
   }
-}
+};
 
-connectToDatabase();
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log("listening for requests");
+  });
+});
