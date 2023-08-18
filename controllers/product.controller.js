@@ -82,13 +82,17 @@ exports.getProduct = async (req, res, next) => {
         ? { ...res, breadcrumbName: productRespose.name }
         : res;
     });
-    res.render("product", {
-      categories: categoriesRespose,
-      category,
-      breadcrumbs,
-      product: productRespose,
-      pageTitle: productRespose?.page_title,
-    });
+    if (!productRespose) {
+      res.render("404", { pageTitle: "404" });
+    } else {
+      res.render("product", {
+        categories: categoriesRespose,
+        category,
+        breadcrumbs,
+        product: productRespose,
+        pageTitle: productRespose?.page_title,
+      });
+    }
   } catch (e) {
     next(e);
   }
