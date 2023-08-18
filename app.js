@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const soap = require("soap");
+const cors = require("cors");
 
 const { PORT, MONGO_URL } = require("./config/config");
 const productRouter = require("./routes/product.router");
@@ -12,6 +12,7 @@ mongoose.set("strictQuery", false);
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,10 +38,27 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, async () => {
-  await mongoose.connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  // await mongoose.connect(MONGO_URL, {
+  //   useNewUrlParser: true,
+  //   useUnifiedTopology: true,
+  // });
 
   console.log(`Listen port ${PORT}`);
 });
+
+async function connectToDatabase() {
+  try {
+    await mongoose.connect(MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // Optional, adjust as needed
+    });
+    console.log("Connected to MongoDB Atlas");
+
+    // You can now define your models and perform database operations here
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+  }
+}
+
+connectToDatabase();
