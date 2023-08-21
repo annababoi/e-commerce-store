@@ -4,14 +4,10 @@ const Products = require("../models/Products");
 exports.getCategory = async (req, res, next) => {
   try {
     const categoriesRespose = await Categories.find({});
-    if (!categoriesRespose) {
-      res.render("404", { pageTitle: "404" });
-    } else {
-      res.render("index", {
-        categories: categoriesRespose,
-        pageTitle: "Home",
-      });
-    }
+    res.render("index", {
+      categories: categoriesRespose,
+      pageTitle: "Home",
+    });
   } catch (e) {
     next(e);
   }
@@ -23,6 +19,7 @@ exports.getOneCategory = async (req, res, next) => {
     const categoriesRespose = await Categories.find({});
 
     const category = categoriesRespose.find((res) => res.id === id);
+
     if (!category) {
       res.render("404", { pageTitle: "404" });
     } else {
@@ -44,13 +41,24 @@ exports.getProducts = async (req, res, next) => {
   try {
     const { categoryId, subCategoryId } = req.params;
 
-    const categoriesRespose = await Categories.find({});
-    const category = categoriesRespose.find((res) => res.id === categoryId);
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 8;
 
-    const productRespose = await Products.find({
+    const categoriesRespose = await Categories.find({});
+    const category = categoriesRespose.find((res) => res?.id === categoryId);
+
+    const productsCount = await Products.countDocuments({
       primary_category_id: subCategoryId,
     });
-    if (!productRespose && !categoriesRespose) {
+
+    const totalPages = Math.ceil(productsCount / perPage);
+    const productRespose = await Products.find({
+      primary_category_id: subCategoryId,
+    })
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+    if (!productRespose.length || !category) {
       res.render("404", { pageTitle: "404" });
     } else {
       res.render("products", {
@@ -59,6 +67,10 @@ exports.getProducts = async (req, res, next) => {
         subCategoryId,
         breadcrumbs: res.breadcrumbs,
         product: productRespose,
+
+        totalPages,
+        currentPage: page,
+
         pageTitle: productRespose.page_title,
       });
     }
@@ -82,7 +94,8 @@ exports.getProduct = async (req, res, next) => {
         ? { ...res, breadcrumbName: productRespose.name }
         : res;
     });
-    if (!productRespose) {
+
+    if (!productRespose || !category) {
       res.render("404", { pageTitle: "404" });
     } else {
       res.render("product", {
