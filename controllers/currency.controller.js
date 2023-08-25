@@ -1,46 +1,31 @@
+const soapClientModule = require("../services/soap.client");
 const helpers = require("../helpers/helpers");
-const soap = require("soap");
 
 exports.getConvert = async (req, res, next) => {
   try {
     const { productPrice, selectedCurrency } = req.body;
 
-    soap.createClient(
-      "http://www.infovalutar.ro/cursbce.asmx?wsdl",
-      {},
-      (err, client) => {
-        client.getvalue(
-          { TheDate: helpers.getFormatDate(), Moneda: "USD" },
-          (err, result) => {
-            let usdToEur = result.getvalueResult;
-            if (selectedCurrency === "EUR") {
-              let converted = result.getvalueResult * productPrice;
-              res.json({
-                convertedPrice: helpers.getProductPrice(
-                  converted,
-                  selectedCurrency
-                ),
-              });
-            } else {
-              client.getvalue(
-                { TheDate: helpers.getFormatDate(), Moneda: selectedCurrency },
-                (err, result) => {
-                  let converted =
-                    result.getvalueResult * productPrice * usdToEur;
-                  console.log(converted);
-                  res.json({
-                    convertedPrice: helpers.getProductPrice(
-                      converted,
-                      selectedCurrency
-                    ),
-                  });
-                }
-              );
-            }
-          }
-        );
-      }
+    await soapClientModule.createSoapClient();
+
+    const usdToEur = await soapClientModule.performSoapRequest({
+      TheDate: helpers.getFormatDate(),
+      Moneda: "USD",
+    });
+
+    const convertParams = {
+      TheDate: helpers.getFormatDate(),
+      Moneda: selectedCurrency,
+    };
+    const currencyMultiplier = selectedCurrency === "EUR" ? 1 : usdToEur;
+
+    const converted = await soapClientModule.performSoapRequest(convertParams);
+
+    const convertedPrice = helpers.getProductPrice(
+      productPrice * currencyMultiplier * converted,
+      selectedCurrency
     );
+
+    res.json({ convertedPrice });
   } catch (e) {
     next(e);
   }

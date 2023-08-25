@@ -1,5 +1,4 @@
 const authValidator = require("../validators/auth.validator");
-const ApiError = require("../helpers/error");
 
 module.exports = {
   isBodyValid: async (req, res, next) => {
@@ -10,7 +9,7 @@ module.exports = {
         const errorMessage = validate.error.message;
         return res.status(400).render("signin", {
           pageTitle: "Sign in",
-          errorMessage: errorMessage,
+          errorMessage,
         });
       }
 
@@ -28,7 +27,7 @@ module.exports = {
         const errorMessage = validate.error.message;
         return res.status(400).render("signup", {
           pageTitle: "Sign up",
-          errorMessage: errorMessage,
+          errorMessage,
         });
       }
 

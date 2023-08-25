@@ -1,10 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { createSoapClient } = require("./services/soap.client");
 
-const { PORT, MONGO_URL } = require("./config/config");
-const productRouter = require("./routes/product.router");
+const { PORT } = require("./config/config");
+const authRouter = require("./routes/auth.router");
 const currencyRouter = require("./routes/currency.router");
+const productRouter = require("./routes/product.router");
+const service = require("./services/mongo.connection");
 
 const helpers = require("./helpers/helpers");
 
@@ -21,38 +24,34 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+app.use("/auth", authRouter);
+
 app.use("/", productRouter);
-app.use("/", currencyRouter);
+app.use("/convert", currencyRouter);
 
 app.locals = helpers;
 
 app.use((req, res, next) => {
-  res.status(404).render("404", { pageTitle: "Page not found" });
+    res.status(404).render("404", { pageTitle: "Page not found" });
 });
 
 app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({
-    message: err.message || "Unknown error",
-    status: err.status || 500,
-  });
-});
-
-const connectDB = async () => {
-  try {
-    await mongoose.connect(MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Optional, adjust as needed
+    res.status(err.status || 500).json({
+        message: err.message || "Unknown error",
+        status: err.status || 500,
     });
-    console.log(`MongoDB`);
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
-};
-
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log("listening for requests");
-  });
 });
+
+service
+    .mongoConnection()
+    .then(() => {
+        return createSoapClient();
+    })
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`listening ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error("Error starting the application:", error);
+    });
