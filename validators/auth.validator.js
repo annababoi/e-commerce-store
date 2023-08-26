@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const regexp = require("../config/regexp.enum"); // Make sure you include the correct regexp file
+const regexp = require("../config/regexp.enum");
 const ApiError = require("../helpers/error");
 
 module.exports = {

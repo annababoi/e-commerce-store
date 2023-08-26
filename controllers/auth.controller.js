@@ -6,6 +6,7 @@ exports.renderSignup = async (req, res, next) => {
   res.render("signup", {
     pageTitle: "Sign up",
     errorMessage: "",
+    inputValues: {},
   });
 };
 
@@ -20,6 +21,7 @@ exports.signup = async (req, res, next) => {
   try {
     const { email, name, age, password, phone } = req.body;
     await authMongoUtils.createUser({ email, name, age, password, phone });
+
     res.redirect("signin");
   } catch (e) {
     next(e);

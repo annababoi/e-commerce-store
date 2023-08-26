@@ -18,26 +18,32 @@
             id="name"
             name="name"
             required
+            autocomplete="name"
+            value="<%= inputValues && inputValues.name ? inputValues.name : '' %>"
           />
         </div>
         <div class="form-group">
-          <label for="password">Age</label>
+          <label for="age">Age</label>
           <input
             type="number"
             class="form-control"
             id="age"
             name="age"
+            autocomplete="age"
             required
+            value="<%= inputValues && inputValues.age ? inputValues.age : '' %>"
           />
         </div>
         <div class="form-group">
-          <label for="password">Phone</label>
+          <label for="phone">Phone</label>
           <input
             type="tel"
             class="form-control"
             id="phone"
+            pattern="[789][0-9]{9}"
             name="phone"
             required
+            value="<%= inputValues && inputValues.phone ? inputValues.phone : '' %>"
           />
         </div>
         <div class="form-group">
@@ -47,7 +53,9 @@
             class="form-control"
             id="email"
             name="email"
+            autocomplete="email"
             required
+            value="<%= inputValues && inputValues.email ? inputValues.email : '' %>"
           />
         </div>
         <div class="form-group">
@@ -57,6 +65,7 @@
             class="form-control"
             id="password"
             name="password"
+            autocomplete="current-password"
             required
           />
         </div>

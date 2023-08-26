@@ -28,6 +28,7 @@ module.exports = {
         return res.status(400).render("signup", {
           pageTitle: "Sign up",
           errorMessage,
+          inputValues: req.body,
         });
       }
 
