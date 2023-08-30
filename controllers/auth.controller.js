@@ -38,7 +38,7 @@ exports.signin = async (req, res, next) => {
     if (!user) {
       return res.status(401).render("signin", {
         pageTitle: "Signin",
-        errorMessage: "Invalid email or password",
+        errorMessage: "User does not exist",
         user,
       });
     }

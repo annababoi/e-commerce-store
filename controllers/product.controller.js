@@ -1,4 +1,4 @@
-const mongoUtils = require("../services/mongo.utils"); // Update the path accordingly
+const mongoUtils = require("../services/mongo.utils");
 
 exports.getAllCategories = async (req, res, next) => {
   try {
